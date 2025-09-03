@@ -6,14 +6,13 @@ import {
 	ArticleStateType,
 	defaultArticleState,
 } from './constants/articleProps';
-import clsx from 'clsx';
 
 export const App = () => {
 	const [config, setConfig] = useState<ArticleStateType>(defaultArticleState);
 
 	return (
 		<main
-			className={clsx(styles.main)}
+			className={styles.main}
 			style={
 				{
 					'--font-family': config.fontFamilyOption.value,

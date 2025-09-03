@@ -1,12 +1,13 @@
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 import styles from './ArticleParamsForm.module.scss';
-import { FormEvent, useState, useRef, useEffect } from 'react';
+import { FormEvent, useState, useRef } from 'react';
 import clsx from 'clsx';
 import { Select } from 'src/ui/select';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
 import { Text } from 'src/ui/text';
+import { useClickOutside } from './hooks/useClickOutside';
 import {
 	fontFamilyOptions,
 	fontSizeOptions,
@@ -23,29 +24,18 @@ type ArticleParamsFormProps = {
 };
 
 export const ArticleParamsForm = ({ onSubmit }: ArticleParamsFormProps) => {
-	const [stateButtonType, setStateButtonType] = useState<boolean>(false);
+	const [isOpenAsidebar, setisOpenAsidebar] = useState<boolean>(false);
 	const [articleState, setArticleState] =
 		useState<ArticleStateType>(defaultArticleState);
 
 	const ref = useRef<HTMLElement>(null);
-
-	function handleClickOutside(e: Event) {
-		if (ref.current && ref.current.contains(e.target as HTMLElement)) {
-			return;
-		} else {
-			setStateButtonType(false);
-		}
-	}
-
-	useEffect(() => {
-		document.addEventListener('click', handleClickOutside, true);
-		return () => {
-			document.removeEventListener('click', handleClickOutside, true);
-		};
-	}, []);
+	useClickOutside(ref, handleClickOutside);
 
 	function handleClick() {
-		setStateButtonType(!stateButtonType);
+		setisOpenAsidebar(!isOpenAsidebar);
+	}
+	function handleClickOutside() {
+		setisOpenAsidebar(false);
 	}
 	function handleFontChange(option: OptionType) {
 		setArticleState({ ...articleState, fontFamilyOption: option });
@@ -73,11 +63,11 @@ export const ArticleParamsForm = ({ onSubmit }: ArticleParamsFormProps) => {
 
 	return (
 		<>
-			<ArrowButton isOpen={stateButtonType} onClick={handleClick} />
+			<ArrowButton isOpen={isOpenAsidebar} onClick={handleClick} />
 			<aside
 				ref={ref}
 				className={clsx(styles.container, {
-					[styles.container_open]: stateButtonType,
+					[styles.container_open]: isOpenAsidebar,
 				})}>
 				<form
 					className={styles.form}
